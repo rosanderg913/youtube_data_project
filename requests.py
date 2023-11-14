@@ -33,14 +33,15 @@ youtube_category_codes = {
     44: 'Trailers'
 }
 import re
+import os
 from googleapiclient.discovery import build
 from data_collection import video_ids, ad_ids
-
-
-# My api key for yt
-yt_api_key = 'AIzaSyDOjxr2IhI5ZEAydA4e99mj8KdgA7zIL9I'
+# Load environmental variables to protect access keys
+from dotenv import load_dotenv
+load_dotenv()
+MY_YT_KEY = os.getenv('YT_ACCESS_KEY')
 # Create the server to access
-youtube_service = build('youtube', 'v3', developerKey=yt_api_key)
+youtube_service = build('youtube', 'v3', developerKey=MY_YT_KEY)
 
 # Start by just accessing first 50 members of videos list, and 50 ads
 sample_ids = video_ids[0:48]

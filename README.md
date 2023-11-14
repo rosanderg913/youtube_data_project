@@ -1,0 +1,3 @@
+This project stemmed from wanting to optimize what I'm watching on Youtube in an effort to switch more from entertainment to focus more on CS development, LeetCode tutorials, and other educational topics. 
+So far I've set up my project within Google Cloud to access Youtube's API to pull all of my watch history. I then parse the data to isolate the video id's to query with.
+After my initial commit to Github, I realized my API key was exposed in my code, so I updated to mask information using environmental variables.
