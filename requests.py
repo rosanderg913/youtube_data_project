@@ -1,43 +1,9 @@
-youtube_category_codes = {
-    1: 'Film',
-    2: 'Autos and Vehicles',
-    10: 'Music',
-    15: 'Pets and Animals',
-    17: 'Sports',
-    18: 'Short Movies',
-    19: 'Travel and Events',
-    20: 'Gaming',
-    21: 'Videoblogging',
-    22: 'People and Blogs',
-    23: 'Comedy',
-    24: 'Entertainment',
-    25: 'News and Politics',
-    26: 'HowTo and Style',
-    27: 'Education',
-    28: 'Science and Technology',
-    29: 'Nonprofits and Activism',
-    30: 'Movies',
-    31: 'Anime/Animation',
-    32: 'Action/Adventure',
-    33: 'Classics',
-    34: 'Comedy',
-    35: 'Documentary',
-    36: 'Drama',
-    37: 'Family',
-    38: 'Foreign',
-    39: 'Horror',
-    40: 'Sci-Fi/Fantasy',
-    41: 'Thriller',
-    42: 'Shorts',
-    43: 'Shows',
-    44: 'Trailers'
-}
 import re
 import os
-import sqlite3
 import itertools
 from googleapiclient.discovery import build
-from data_collection import video_ids, ad_ids
+from data_collection import video_ids, ad_ids, youtube_category_codes
+from sqlite import create_database, insert_video_data, get_processed_video_ids_from_db
 # Load environmental variables to protect access keys
 from dotenv import load_dotenv
 load_dotenv()
@@ -122,65 +88,6 @@ def youtube_duration_to_seconds(youtube_duration):
     # Timestamp not found in details, return 0
     return 0
 
-
-# Global flag to create sqlite db
-database_created = False
-#
-# Function to create my database to store video information (to limit my api usage)
-# Creates table 'video_data' with columns 'video_id', 'title', 'category_name', 'duration_seconds'; Sets Global_Flag to True once created
-#
-def create_database():
-    global database_created
-    if not database_created:
-        conn = sqlite3.connect('video_data.db')
-        cursor = conn.cursor()
-
-        # Create table to store video information
-        cursor.execute('''
-                       CREATE TABLE IF NOT EXISTS video_data (
-                            video_id TEXT PRIMARY KEY,
-                            title TEXT,
-                            category_name TEXT,
-                            duration_seconds INTEGER
-                        )
-                    ''')
-        conn.commit()
-        conn.close()
-
-        # Set flag to True once db created
-        database_created = True
-
-# Function to insert data into db
-def insert_video_data(video_id, title, category_name, duration_seconds):
-    try:
-        # Connect to db
-        conn = sqlite3.connect('video_data.db')
-        cursor = conn.cursor()
-        # Insert data into table
-        cursor.execute('''
-                   INSERT INTO video_data (video_id, title, category_name, duration_seconds)
-                   VALUES (?, ?, ?, ?)
-                    ''', (video_id, title, category_name, duration_seconds))
-        conn.commit()
-    except sqlite3.Error as e:
-        print("An error occured while opening inputting data: ", str(e))
-    finally:
-        # Close the connection whether exception occured or not
-        if conn:
-            conn.close()
-
-
-# Helper function to get list of video ids from my db as a check against sending the same requests to youtubes api
-def get_processed_video_ids_from_db():
-    conn = sqlite3.connect('video_data.db')
-    cursor = conn.cursor()
-
-    cursor.execute('SELECT DISTINCT video_id FROM video_data')
-    process_video_ids = set(row[0] for row in cursor.fetchall())
-
-    conn.close()
-
-    return process_video_ids
 
 
 
