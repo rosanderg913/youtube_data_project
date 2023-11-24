@@ -89,8 +89,6 @@ def youtube_duration_to_seconds(youtube_duration):
     return 0
 
 
-
-
 # Example Usage
 process_video_batches(video_ids)
 print(video_duration_by_category)
