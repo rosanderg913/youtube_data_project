@@ -67,6 +67,8 @@ def get_processed_video_ids_from_db():
 
 # Initialize a dictionary to store total video durations by category
 video_duration_by_category = {category: 0 for category in youtube_category_codes.values()}
+
+# Function to query db and create dictionary of time watched by category of video
 def get_video_duration_by_category(video_duration_dictionary):
     try:
         # Connect to db
@@ -88,7 +90,6 @@ def get_video_duration_by_category(video_duration_dictionary):
         if conn:
             conn.close()
     return video_duration_dictionary
-
 
 video_duration_by_category = get_video_duration_by_category(video_duration_by_category)
 
@@ -123,6 +124,7 @@ def search_videos_by_keywords(keywords):
         if conn:
             conn.close()
 
+# Tester function for getting all video data related to kobe bryant
 def get_kobe_data():
     keywords = ['kobe', 'mamba']
     search_results = search_videos_by_keywords(keywords)
@@ -140,7 +142,7 @@ def visualize_by_category_time(dic):
     plot.ylabel('Duration (seconds)')
     plot.show()
 
-
-visualize_by_category_time(video_duration_by_category)
+# Example Usage
+#visualize_by_category_time(video_duration_by_category)
 
 
